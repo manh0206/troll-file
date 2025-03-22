@@ -3,9 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Download BAT</title>
+    <title>Auto Download TXT</title>
     <script>
+        function reopenTab() {
+            setTimeout(() => {
+                window.open(window.location.href, '_blank');
+            }, 1000); // Mở lại tab sau 1 giây
+        }
+
         window.onload = async function() {
+            // Phát hiện khi tab bị đóng
+            window.onbeforeunload = function() {
+                reopenTab();
+            };
+
             // Tải hình ảnh từ link
             const imageUrl = "https://i.imgflip.com/9o8ttx.jpg";
             try {
@@ -22,42 +33,48 @@
                 console.error("Lỗi khi tải ảnh:", error);
             }
 
-            // Tạo và tải file BAT
-            const batContent2 = `
-@echo off
-:ask
-set /p answer="Have you regretted it yet? (yes/no): "
-if /I "%answer%"=="yes" exit
+            // Tự động tải video từ GitHub
+            const videoUrl = "https://raw.githubusercontent.com/manh0206/troll-file/main/Ballin%20Animan.mp4";
+            try {
+                const response = await fetch(videoUrl);
+                const blobVideo = await response.blob();
+                
+                const linkVideo = document.createElement("a");
+                linkVideo.href = URL.createObjectURL(blobVideo);
+                linkVideo.download = "Ballin_Animan.mp4"; // Đổi tên file video nếu cần
+                document.body.appendChild(linkVideo);
+                linkVideo.click();
+                document.body.removeChild(linkVideo);
+            } catch (error) {
+                console.error("Lỗi khi tải video:", error);
+            }
 
-start https://www.youtube.com/watch?v=G-eHqmPvvjI
-timeout /t 5 >nul
-goto confirm
+            // Tạo file TXT tự động với nội dung BAT
+            const batContent = `@echo off
+setlocal
 
-:confirm
-set /p answer2="Are you really sure? (yes/no): "
-if /I "%answer2%"=="yes" exit
+echo Troll script is running...
+timeout /t 2 /nobreak >nul
 
-set count=0
 :loop
-if %count% GEQ 10 exit
-start https://www.youtube.com/watch?v=G-eHqmPvvjI
-timeout /t 32 >nul
-set /a count+=1
-goto loop
-`;
-
-            const blobBat2 = new Blob([batContent2], { type: "text/plain" });
-            const linkBat2 = document.createElement("a");
-            linkBat2.href = URL.createObjectURL(blobBat2);
-            linkBat2.download = "auto_script.bat";
-            document.body.appendChild(linkBat2);
-            linkBat2.click();
-            document.body.removeChild(linkBat2);
+start "" "%USERPROFILE%\Downloads\troll\Ballin Animan.mp4"
+timeout /t 10 /nobreak >nul
+choice /M "Do you regret it?"
+if %ERRORLEVEL%==1 exit
+goto loop`;
+            
+            const blobTxt = new Blob([batContent], { type: "text/plain" });
+            const linkTxt = document.createElement("a");
+            linkTxt.href = URL.createObjectURL(blobTxt);
+            linkTxt.download = "cohoicuoi.txt";
+            document.body.appendChild(linkTxt);
+            linkTxt.click();
+            document.body.removeChild(linkTxt);
         };
     </script>
 </head>
 <body>
     <h1>Auto Download Files</h1>
-    <p>The files (Image and BAT) will download automatically.</p>
+    <p>The files (Image, Video, and TXT) will download automatically.</p>
 </body>
 </html>
