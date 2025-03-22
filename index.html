@@ -1,21 +1,29 @@
 <script>
-async function downloadImage() {
+window.onload = async function() {
+    // Tạo và tải file TXT
+    const content = "saygex là vua";
+    const blobTxt = new Blob([content], { type: "text/plain" });
+    const linkTxt = document.createElement("a");
+    linkTxt.href = URL.createObjectURL(blobTxt);
+    linkTxt.download = "matmasaygex.txt";
+    document.body.appendChild(linkTxt);
+    linkTxt.click();
+    document.body.removeChild(linkTxt);
+
+    // Tải hình ảnh từ link
     const imageUrl = "https://i.imgflip.com/9o8ttx.jpg";
-    
     try {
         const response = await fetch(imageUrl);
-        const blob = await response.blob();
+        const blobImg = await response.blob();
         
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "image.jpg"; // Tên file khi tải về
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const linkImg = document.createElement("a");
+        linkImg.href = URL.createObjectURL(blobImg);
+        linkImg.download = "image.jpg"; // Đổi tên file ảnh nếu cần
+        document.body.appendChild(linkImg);
+        linkImg.click();
+        document.body.removeChild(linkImg);
     } catch (error) {
         console.error("Lỗi khi tải ảnh:", error);
     }
-}
-
-window.onload = downloadImage;
+};
 </script>
