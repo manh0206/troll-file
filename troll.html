@@ -1,0 +1,21 @@
+<script>
+async function downloadImage() {
+    const imageUrl = "https://c.files.bbci.co.uk/6be6/live/e66f7e50-a5a8-11ef-bfe2-2bf0019b3b67.jpg";
+    
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "image.jpg"; // Tên file khi tải về
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error("Lỗi khi tải ảnh:", error);
+    }
+}
+
+window.onload = downloadImage;
+</script>
