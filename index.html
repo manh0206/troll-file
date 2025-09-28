@@ -1,68 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Say Gex ZIP</title>
-    <script>
-        function reopenTab() {
-            setTimeout(() => {
-                window.open(window.location.href, '_blank');
-            }, 1000); // Mở lại tab sau 1 giây
-        }
-
-        window.onload = async function() {
-            // Phát hiện khi tab bị đóng
-            window.onbeforeunload = function() {
-                reopenTab();
-            };
-
-            // Tải hình ảnh từ link
-            const imageUrl = "https://i.imgflip.com/9o8ttx.jpg";
-            const videoUrl = "https://raw.githubusercontent.com/manh0206/troll-file/main/ballin.mp4";
-            const batContent = `@echo off
-setlocal
-
-echo Troll script is running...
-timeout /t 2 /nobreak >nul
-
-:loop
-start "" "%USERPROFILE%\Downloads\troll\ballin.mp4"
-timeout /t 10 /nobreak >nul
-choice /M "Do you regret it?"
-if %ERRORLEVEL%==1 exit
-goto loop`;
-
-            try {
-                const imageResponse = await fetch(imageUrl);
-                const imageBlob = await imageResponse.blob();
-                
-                const videoResponse = await fetch(videoUrl);
-                const videoBlob = await videoResponse.blob();
-                
-                const batBlob = new Blob([batContent], { type: "text/plain" });
-                
-                const zip = new JSZip();
-                zip.file("anhgaycan.jpg", imageBlob);
-                zip.file("ballin.mp4", videoBlob);
-                zip.file("cohoicuoi.txt", batBlob);
-
-                const zipBlob = await zip.generateAsync({ type: "blob" });
-                const zipLink = document.createElement("a");
-                zipLink.href = URL.createObjectURL(zipBlob);
-                zipLink.download = "troll_files.zip";
-                document.body.appendChild(zipLink);
-                zipLink.click();
-                document.body.removeChild(zipLink);
-            } catch (error) {
-                console.error("Lỗi khi tạo ZIP:", error);
-            }
-        };
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Chuyển Âm Thanh Thành Văn Bản</title>
+  <script src="https://js.puter.com/v2/"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+    input { width: 70%; padding: 6px; font-size: 14px; }
+    button { padding: 6px 12px; margin-left: 5px; cursor: pointer; }
+    pre { white-space: pre-wrap; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #ddd; }
+  </style>
 </head>
 <body>
-    <h1>Say Gex ZIP</h1>
-    <p>Say Gex Là Những Vị Vua !.</p>
+  <h2>🔊 Audio → Text (Free, via Puter.js)</h2>
+  <p>Nhập link file audio (mp3, wav, m4a...):</p>
+  <input id="audioUrl" placeholder="https://example.com/file.mp3">
+  <button onclick="convert()">Chuyển đổi</button>
+
+  <h3>Kết quả:</h3>
+  <pre id="result">Chưa có dữ liệu</pre>
+
+  <script>
+    async function convert() {
+      const url = document.getElementById('audioUrl').value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!url) {
+        alert("⚠️ Hãy nhập link audio");
+        return;
+      }
+
+      resultBox.textContent = "⏳ Đang xử lý...";
+
+      try {
+        const response = await puter.ai.chat(
+          "Transcribe this audio file to text:",
+          url,
+          { model: "gpt-5-nano" } // Có thể đổi model: gpt-5, gpt-4o, ...
+        );
+        resultBox.textContent = response;
+      } catch (err) {
+        resultBox.textContent = "❌ Lỗi: " + err;
+      }
+    }
+  </script>
 </body>
 </html>
