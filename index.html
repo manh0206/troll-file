@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h2>🔊 Audio → Text (Free, via Puter.js)</h2>
+  <h2>🔊 Audio → Text (via Puter.js)</h2>
   <p>Nhập link file audio (mp3, wav, m4a...):</p>
   <input id="audioUrl" placeholder="https://example.com/file.mp3">
   <button onclick="convert()">Chuyển đổi</button>
@@ -36,11 +36,19 @@
         const response = await puter.ai.chat(
           "Transcribe this audio file to text:",
           url,
-          { model: "gpt-5-nano" } // Có thể đổi model: gpt-5, gpt-4o, ...
+          { model: "gpt-5-nano" }
         );
-        resultBox.textContent = response;
+
+        // Nếu là object có .text thì in ra text
+        if (typeof response === "object") {
+          resultBox.textContent = response.text ?? JSON.stringify(response, null, 2);
+        } else {
+          resultBox.textContent = response;
+        }
       } catch (err) {
-        resultBox.textContent = "❌ Lỗi: " + err;
+        // In lỗi chi tiết thay vì [object Object]
+        resultBox.textContent = "❌ Lỗi: " + (err?.message || JSON.stringify(err, null, 2));
+        console.error(err);
       }
     }
   </script>
